@@ -25,6 +25,15 @@ jobs:
       - name: List files in the working directory
         run: ls -R
 
+      - name: List files in Server_part directory
+        run: ls -R Server_part
+
+      - name: List files in Client_part directory
+        run: ls -R Client_part
+
+      - name: List files in Test_server directory
+        run: ls -R Test_server
+
       - name: Restore dependencies for Server_part
         run: dotnet restore 'Server_part/Server_part.csproj'
 

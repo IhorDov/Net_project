@@ -1,30 +1,53 @@
 name: dotnet project
-'on':
+
+on:
   push:
     branches:
       - main
   pull_request:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
     name: Build and Test
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
-      - name: Restore dependencies
-        run: dotnet restore 'Net_project.sln'
-      - name: Build solution
-        run: dotnet build 'Net_project.sln' --configuration Release --no-restore
+          dotnet-version: '8.0.x'
+
+      - name: List files in the working directory
+        run: ls -R
+
+      - name: Restore dependencies for Server_part
+        run: dotnet restore 'Server_part/Server_part.csproj'
+
+      - name: Restore dependencies for Client_part
+        run: dotnet restore 'Client_part/Client_part.csproj'
+
+      - name: Restore dependencies for Test_server
+        run: dotnet restore 'Test_server/Test_server.csproj'
+
+      - name: Build Server_part
+        run: dotnet build 'Server_part/Server_part.csproj' --configuration Release --no-restore
+
+      - name: Build Client_part
+        run: dotnet build 'Client_part/Client_part.csproj' --configuration Release --no-restore
+
+      - name: Build Test_server
+        run: dotnet build 'Test_server/Test_server.csproj' --configuration Release --no-restore
+
       - name: Run tests
-        run: >-
-          dotnet test 'Net_project.sln' --configuration Release --no-restore
+        run: >
+          dotnet test 'Test_server/Test_server.csproj' --configuration Release --no-restore
           --logger "trx;LogFileName=test_results.trx"
+
       - name: Publish test results
         uses: actions/upload-artifact@v3
         with:

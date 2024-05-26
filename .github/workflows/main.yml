@@ -1,4 +1,4 @@
-name: Net_project
+name: dotnet package
 
 'on':
   push:
@@ -14,7 +14,8 @@ jobs:
     strategy:
       matrix:
         dotnet-version:
-          - 7.0.x
+          - 3.1.x
+          - 8.0.x
 
     steps:
       - name: Checkout code
@@ -26,10 +27,10 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Net_project.sln
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build Net_project.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-restore --verbosity normal
+        run: dotnet test Net_project.sln --configuration Release --no-restore --verbosity normal

@@ -16,17 +16,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore '**/*.sln'
+        run: dotnet restore 'path/to/your-solution.sln'
 
       - name: Build solution
-        run: dotnet build '**/*.sln' --configuration Release --no-restore
+        run: dotnet build 'path/to/your-solution.sln' --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test '**/*.sln' --configuration Release --no-restore --logger "trx;LogFileName=test_results.trx"
+        run: dotnet test 'path/to/your-solution.sln' --configuration Release --no-restore --logger "trx;LogFileName=test_results.trx"
 
       - name: Publish test results
         uses: actions/upload-artifact@v3

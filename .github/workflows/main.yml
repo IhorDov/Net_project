@@ -1,4 +1,4 @@
-name: dotnet project
+name: Net_project
 
 'on':
   push:

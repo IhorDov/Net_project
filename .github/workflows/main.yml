@@ -1,6 +1,6 @@
-name: dotnet package
+name: dotnet project
 
-'on':
+on:
   push:
     branches:
       - main
@@ -11,26 +11,25 @@ name: dotnet package
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version:
-          - 3.1.x
-          - 8.0.x
+    name: Build and Test
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup .NET ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/checkout@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore Net_project.sln
+        run: dotnet restore '**/*.sln'
 
       - name: Build solution
-        run: dotnet build Net_project.sln --configuration Release --no-restore
+        run: dotnet build '**/*.sln' --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test Net_project.sln --configuration Release --no-restore --verbosity normal
+        run: dotnet test '**/*.sln' --configuration Release --no-restore --logger "trx;LogFileName=test_results.trx"
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test Results
+          path: '**/*.trx'
